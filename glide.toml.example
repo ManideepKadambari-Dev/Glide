@@ -1,0 +1,28 @@
+# Glide configuration.
+#
+# Copy this file to `glide.toml` in the folder you run Glide from and it is
+# picked up automatically, or point at it explicitly:
+#     py -m glide --config path/to/glide.toml
+#
+# Every value is optional — anything you omit uses the built-in default.
+# Command-line flags override the file (e.g. --pinch 0.6).
+
+[camera]
+index = 0          # which webcam
+width = 640
+height = 480
+flip = true        # mirror the preview so movement feels natural
+
+[cursor]
+margin = 0.12      # dead border of the frame; larger = less hand travel
+min_cutoff = 1.0   # steadiness: lower = less jitter when still
+beta = 0.5         # responsiveness: higher = less lag when moving fast
+
+[clicks]
+pinch = 0.5        # thumb-to-finger distance to click; higher = easier
+grab = 1.2         # hand openness below which a fist grabs (drag)
+click_cooldown = 0.12
+
+[scroll]
+speed = 1500       # two-finger scroll sensitivity
+natural = false    # true = content follows your fingers

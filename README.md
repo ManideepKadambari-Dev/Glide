@@ -41,25 +41,33 @@ is DPI-aware, so mixed display-scaling stays accurate.
 ## Requirements
 
 - Windows
-- Python 3.x with `opencv-python`, `mediapipe`, `numpy`
+- Python 3.9+ with `opencv-python`, `mediapipe`, `numpy` (a TOML config file
+  needs 3.11+)
 - A webcam
 
-Install dependencies (already present in this environment):
+Install dependencies:
 
 ```
 py -m pip install -r requirements.txt
 ```
 
 On first run the app downloads the MediaPipe hand model
-(`hand_landmarker.task`, ~7.8 MB) next to `glide.py`. It's already present in
-this folder, so no download is needed here. If you ever need it manually, grab
-it from the URL in `MODEL_URL` inside `glide.py` and pass `--model <path>`.
+(`hand_landmarker.task`, ~7.8 MB) into the project folder. It's already present
+here, so no download is needed. Point at a different copy with `--model <path>`.
 
 ## Run
 
 ```
-py glide.py                 # default webcam
-py glide.py --camera 1      # choose another webcam
+py -m glide                 # default webcam
+py -m glide --camera 1      # choose another webcam
+py run.py                   # equivalent convenience launcher
+```
+
+Or install it as a command:
+
+```
+py -m pip install -e .
+glide                       # then just run `glide`
 ```
 
 While the preview window is focused:
@@ -67,22 +75,40 @@ While the preview window is focused:
 - `q` / `Esc` — quit
 - `p` — pause / resume cursor control (the camera keeps tracking)
 - `f` — toggle the camera mirror
+- `h` — show / hide the on-screen gesture guide
 
 Press `p` to pause whenever you want your normal mouse back without quitting.
 
-## Tuning
+## Configuration
 
-| Flag | Default | Meaning |
-| --- | --- | --- |
-| `--min-cutoff` | `1.0` | Cursor steadiness. **Lower = less jitter** (more smoothing) when the hand is still |
-| `--beta` | `0.5` | Responsiveness. Higher = less lag when moving fast |
-| `--margin` | `0.12` | Dead border of the frame. Larger = less hand travel to reach screen edges |
-| `--pinch` | `0.5` | Thumb-to-finger distance (÷ palm) that counts as a pinch. **Higher = easier clicks** |
-| `--grab` | `1.2` | Hand openness below which a fist grabs (drag). Higher = easier to grab |
-| `--click-cooldown` | `0.12` | Minimum seconds between clicks. Kept below the double-click window so two quick pinches double-click |
-| `--scroll-speed` | `1500` | Two-finger scroll sensitivity. Higher = faster scrolling |
-| `--natural-scroll` | off | Reverse scroll direction (content follows your fingers) |
-| `--no-flip` | off | Disable the mirror flip |
+Every setting can come from a **TOML config file**, the **command line**, or
+the built-in defaults — in that order of precedence (CLI wins).
+
+```
+py -m glide --print-config          # dump the effective settings as TOML
+py -m glide --print-config > glide.toml   # save them to edit
+py -m glide                         # ./glide.toml is picked up automatically
+py -m glide --config path/to.toml   # ...or point at one explicitly
+```
+
+See [`glide.toml.example`](glide.toml.example) for an annotated template.
+
+### Options
+
+| Flag | Config key | Default | Meaning |
+| --- | --- | --- | --- |
+| `--pinch` | `clicks.pinch` | `0.5` | Thumb-to-finger distance (÷ palm) to click. **Higher = easier clicks** |
+| `--grab` | `clicks.grab` | `1.2` | Hand openness below which a fist grabs (drag). Higher = easier to grab |
+| `--click-cooldown` | `clicks.click_cooldown` | `0.12` | Min seconds between clicks (kept below the double-click window) |
+| `--min-cutoff` | `cursor.min_cutoff` | `1.0` | Cursor steadiness. **Lower = less jitter** when the hand is still |
+| `--beta` | `cursor.beta` | `0.5` | Responsiveness. Higher = less lag when moving fast |
+| `--margin` | `cursor.margin` | `0.12` | Dead border of the frame. Larger = less hand travel to reach the edges |
+| `--scroll-speed` | `scroll.speed` | `1500` | Scroll sensitivity. Higher = faster |
+| `--natural-scroll` | `scroll.natural` | off | Reverse scroll direction |
+| `--camera` | `camera.index` | `0` | Webcam index |
+| `--width` / `--height` | `camera.width/height` | `640` / `480` | Capture resolution |
+| `--flip` / `--no-flip` | `camera.flip` | on | Mirror the preview |
+| `--model` | `model.path` | bundled | Path to `hand_landmarker.task` |
 
 **Still jittery?** Lower `--min-cutoff` (try `0.6` or `0.4`). **Feels laggy when
 you move fast?** Raise `--beta` (try `1.0`). The cursor uses a *One Euro filter*,
@@ -107,8 +133,29 @@ frame), and `ai <n>ms` (hand-detection time). Use it to diagnose slowness:
   capture size further, e.g. `--width 480 --height 360`.
 
 ```
-py glide.py --width 1280 --height 720    # if your cam prefers 720p MJPG
+py -m glide --width 1280 --height 720    # if your cam prefers 720p MJPG
 ```
+
+## Project layout
+
+```
+glide/
+  __main__.py    CLI entry point (py -m glide)
+  config.py      Config dataclass + TOML file + CLI merge
+  winmouse.py    Windows cursor / click / wheel control (ctypes)
+  filters.py     One Euro smoothing filter
+  gestures.py    hand-landmark geometry + gesture detection (pure)
+  controller.py  turns detections into cursor moves / clicks / drag / scroll
+  hud.py         the on-screen overlay (header, gesture badge, gauges, help)
+  app.py         camera + hand-tracking run loop
+  selftest.py    logic checks (no camera, no real mouse)
+run.py           convenience launcher
+glide.toml.example
+```
+
+The mouse backend and screen bounds are **injected** into the controller, so
+the gesture logic runs headless in `selftest` against a fake mouse — no camera,
+no cursor movement.
 
 ## How it works
 
@@ -135,7 +182,7 @@ py glide.py --width 1280 --height 720    # if your cam prefers 720p MJPG
 ## Validate without a camera
 
 ```
-py glide.py --selftest
+py -m glide --selftest
 ```
 
 Runs the gesture and multi-monitor mapping logic on synthetic data without

@@ -54,3 +54,7 @@ Thumbs.db
 # Hand-landmark model is large and auto-downloaded on first run.
 hand_landmarker.task
 *.task
+# Personal config (keep glide.toml.example as the shared template).
+glide.toml
+# Rendered HUD previews / scratch images.
+_hud_*.png
