@@ -5,8 +5,6 @@ The mouse backend and screen bounds are injected, so the whole thing can be
 driven in tests with a fake mouse and no real cursor movement.
 """
 
-import math
-
 from .filters import OneEuroFilter
 from .gestures import (
     INDEX_TIP, MIDDLE_TIP, hand_openness, is_two_finger, palm_center, pinch_dists,

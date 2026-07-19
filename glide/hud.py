@@ -100,7 +100,7 @@ def draw_hand(frame, lm, gesture):
     pts = [(int(p.x * w), int(p.y * h)) for p in lm]
     for a, b in HAND_CONNECTIONS:
         cv2.line(frame, pts[a], pts[b], (96, 92, 88), 2, _AA)
-    for i, (x, y) in enumerate(pts):
+    for x, y in pts:
         cv2.circle(frame, (x, y), 3, (196, 194, 190), -1, _AA)
     for i in (THUMB_TIP, INDEX_TIP, MIDDLE_TIP):
         cv2.circle(frame, pts[i], 5, ACCENT, -1, _AA)

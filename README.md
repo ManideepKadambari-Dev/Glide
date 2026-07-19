@@ -2,6 +2,8 @@
 
 Use your webcam and hand to drive the cursor on **any number of monitors**.
 
+![Glide in action](docs/demo.gif)
+
 | Gesture | Action |
 | --- | --- |
 | Move your hand (open palm) | Cursor follows the **centre of your palm** |
@@ -52,8 +54,8 @@ py -m pip install -r requirements.txt
 ```
 
 On first run the app downloads the MediaPipe hand model
-(`hand_landmarker.task`, ~7.8 MB) into the project folder. It's already present
-here, so no download is needed. Point at a different copy with `--model <path>`.
+(`hand_landmarker.task`, ~7.8 MB) into the project folder — the model is not
+checked into the repo. Point at an existing copy with `--model <path>`.
 
 ## Run
 
