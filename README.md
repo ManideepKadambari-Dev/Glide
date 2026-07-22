@@ -1,6 +1,10 @@
-# Glide — control your mouse with hand gestures
+<p align="center">
+  <img src="assets/glide-logo.png" alt="Glide — control your mouse with hand gestures" width="760">
+</p>
 
-Use your webcam and hand to drive the cursor on **any number of monitors**.
+<p align="center">
+  Use your webcam and hand to drive the cursor on <b>any number of monitors</b>.
+</p>
 
 ![Glide in action](docs/demo.gif)
 
@@ -145,13 +149,16 @@ glide/
   __main__.py    CLI entry point (py -m glide)
   config.py      Config dataclass + TOML file + CLI merge
   winmouse.py    Windows cursor / click / wheel control (ctypes)
+  winicon.py     Windows taskbar identity + window icon (ctypes)
   filters.py     One Euro smoothing filter
   gestures.py    hand-landmark geometry + gesture detection (pure)
   controller.py  turns detections into cursor moves / clicks / drag / scroll
   hud.py         the on-screen overlay (header, gesture badge, gauges, help)
   app.py         camera + hand-tracking run loop
   selftest.py    logic checks (no camera, no real mouse)
+  assets/        packaged app icon (glide.ico)
 run.py           convenience launcher
+assets/          brand: logo mark + lockup (svg sources, png exports, render.py)
 glide.toml.example
 ```
 

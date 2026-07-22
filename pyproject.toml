@@ -29,3 +29,6 @@ glide = "glide.__main__:main"
 
 [tool.setuptools]
 packages = ["glide"]
+
+[tool.setuptools.package-data]
+glide = ["assets/*.ico"]

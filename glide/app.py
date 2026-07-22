@@ -5,7 +5,7 @@ import sys
 import time
 import urllib.request
 
-from . import winmouse
+from . import winicon, winmouse
 from .controller import GestureController
 from .hud import Hud
 
@@ -49,6 +49,7 @@ def run(cfg):
     from mediapipe.tasks.python import vision
 
     winmouse.set_dpi_aware()
+    winicon.set_app_id()  # taskbar shows Glide's icon, not python.exe
     screen = winmouse.virtual_screen()
     mouse = winmouse.WinMouse()
     controller = GestureController(cfg, mouse, screen)
@@ -88,6 +89,8 @@ def run(cfg):
     start = time.perf_counter()
     fps = cap_ms = infer_ms = 0.0
     last_ts = -1
+    icon_set = False
+    icon_tries = 0
 
     try:
         while True:
@@ -132,6 +135,9 @@ def run(cfg):
 
             cv2.imshow(WINDOW, frame)
             key = cv2.waitKey(1) & 0xFF
+            if not icon_set and icon_tries < 30:
+                icon_set = winicon.set_window_icon(WINDOW)
+                icon_tries += 1
             if key in (ord("q"), 27):
                 break
             elif key == ord("p"):

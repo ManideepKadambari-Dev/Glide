@@ -1,0 +1,63 @@
+<svg width="1024" height="360" viewBox="0 0 1024 360" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Glide — control your mouse with hand gestures">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1024" y2="360" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1B1F25"/>
+      <stop offset="1" stop-color="#101216"/>
+    </linearGradient>
+    <radialGradient id="bgGlow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse"
+      gradientTransform="translate(196 180) rotate(90) scale(280)">
+      <stop offset="0" stop-color="#5CD6C6" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="#5CD6C6" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- mark gradients (userSpaceOnUse, transform with the embedded group) -->
+    <linearGradient id="tile" x1="64" y1="40" x2="448" y2="472" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#272C34"/><stop offset="1" stop-color="#141619"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse"
+      gradientTransform="translate(300 208) rotate(90) scale(236)">
+      <stop offset="0" stop-color="#5CD6C6" stop-opacity="0.30"/>
+      <stop offset="0.55" stop-color="#5CD6C6" stop-opacity="0.07"/>
+      <stop offset="1" stop-color="#5CD6C6" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="teal" x1="352" y1="150" x2="212" y2="312" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#9CF0DA"/><stop offset="0.5" stop-color="#5CD6C6"/><stop offset="1" stop-color="#34AEA6"/>
+    </linearGradient>
+    <linearGradient id="comet" x1="288" y1="230" x2="104" y2="384" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#7FE7D3" stop-opacity="0.95"/>
+      <stop offset="0.55" stop-color="#4FCBBF" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#3AB4AB" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="spark" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse"
+      gradientTransform="translate(348 152) scale(30)">
+      <stop offset="0" stop-color="#F4FFFB"/><stop offset="0.35" stop-color="#B7F4E6"/><stop offset="1" stop-color="#7FEAD8" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- card -->
+  <rect x="0" y="0" width="1024" height="360" rx="36" fill="url(#bg)"/>
+  <rect x="0" y="0" width="1024" height="360" rx="36" fill="url(#bgGlow)"/>
+  <rect x="1.5" y="1.5" width="1021" height="357" rx="34.5" fill="none" stroke="#5CD6C6" stroke-opacity="0.14" stroke-width="3"/>
+
+  <!-- mark, scaled into a 220px chip -->
+  <g transform="translate(78 70) scale(0.4297)">
+    <rect x="0" y="0" width="512" height="512" rx="118" fill="url(#tile)"/>
+    <rect x="0" y="0" width="512" height="512" rx="118" fill="url(#glow)"/>
+    <path d="M286 232 C220 252 150 300 104 382 C150 320 210 300 250 286 Z" fill="url(#comet)"/>
+    <path d="M272 250 Q182 300 126 358" stroke="#8CEBD8" stroke-width="6" stroke-linecap="round" fill="none" opacity="0.45"/>
+    <polygon points="348,152 348,281.2 314.6,252.3 294,301 276.6,293.4 297.1,244.7 260.6,239.4"
+      fill="url(#teal)" stroke="#0E1013" stroke-width="6" stroke-linejoin="round"/>
+    <circle cx="348" cy="152" r="30" fill="url(#spark)"/>
+    <circle cx="348" cy="152" r="8" fill="#F4FFFB"/>
+    <rect x="3" y="3" width="506" height="506" rx="115" fill="none" stroke="#5CD6C6" stroke-opacity="0.16" stroke-width="2"/>
+  </g>
+
+  <!-- divider -->
+  <rect x="352" y="104" width="4" height="152" rx="2" fill="#5CD6C6" fill-opacity="0.45"/>
+
+  <!-- wordmark + tagline -->
+  <text x="392" y="188" font-family="'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif"
+    font-size="132" font-weight="600" letter-spacing="-3" fill="#F1F4F6">Glide</text>
+  <text x="396" y="244" font-family="'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif"
+    font-size="33" font-weight="400" letter-spacing="0.3" fill="#A7ADB4">Control your mouse with hand gestures</text>
+</svg>
