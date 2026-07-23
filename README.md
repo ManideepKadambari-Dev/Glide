@@ -6,8 +6,6 @@
   Use your webcam and hand to drive the cursor on <b>any number of monitors</b>.
 </p>
 
-![Glide in action](docs/demo.gif)
-
 | Gesture | Action |
 | --- | --- |
 | Move your hand (open palm) | Cursor follows the **centre of your palm** |
@@ -63,6 +61,16 @@ checked into the repo. Point at an existing copy with `--model <path>`.
 
 ## Run
 
+The `make.bat` helper wraps the common tasks — double-click it for a menu, or
+pass a mode on the command line:
+
+```
+make.bat dev      # run Glide            (same as: py -m glide)
+make.bat build    # build the standalone Glide.exe + zip, ready to ship
+```
+
+Or run the module directly:
+
 ```
 py -m glide                 # default webcam
 py -m glide --camera 1      # choose another webcam
@@ -75,6 +83,10 @@ Or install it as a command:
 py -m pip install -e .
 glide                       # then just run `glide`
 ```
+
+**Share it as a standalone app.** `make.bat build` packages Glide into a
+`Glide.exe` that runs with no Python install (and no source) — see
+[docs/PACKAGING.md](docs/PACKAGING.md).
 
 While the preview window is focused:
 
@@ -158,7 +170,10 @@ glide/
   selftest.py    logic checks (no camera, no real mouse)
   assets/        packaged app icon (glide.ico)
 run.py           convenience launcher
+make.bat         run / build helper  (make.bat dev | build)
+Glide.spec       PyInstaller recipe for the standalone .exe
 assets/          brand: logo mark + lockup (svg sources, png exports, render.py)
+docs/            PACKAGING.md - build & ship the standalone app
 glide.toml.example
 ```
 

@@ -9,6 +9,7 @@ file or a Win32 call is unavailable, the app runs on with no icon.
 
 import ctypes
 import os
+import sys
 from ctypes import wintypes
 
 APP_ID = "Glide.GestureMouse"
@@ -23,7 +24,14 @@ _LR_LOADFROMFILE = 0x0010
 
 def icon_path():
     """Path to the bundled .ico, or None if it isn't present."""
-    return ICON_PATH if os.path.isfile(ICON_PATH) else None
+    if os.path.isfile(ICON_PATH):
+        return ICON_PATH
+    base = getattr(sys, "_MEIPASS", None)  # PyInstaller frozen build
+    if base:
+        p = os.path.join(base, "glide", "assets", "glide.ico")
+        if os.path.isfile(p):
+            return p
+    return None
 
 
 def set_app_id(app_id=APP_ID):

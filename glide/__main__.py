@@ -19,6 +19,8 @@ def build_parser():
                    help="print the effective config as TOML and exit")
     p.add_argument("--selftest", action="store_true",
                    help="validate the logic without a camera or the real mouse")
+    p.add_argument("--check", action="store_true",
+                   help="verify the hand model loads (no camera or window) and exit")
 
     # Overrides. Defaults are None so 'unset' falls back to the config file.
     cam = p.add_argument_group("camera")
@@ -68,7 +70,18 @@ def main(argv=None):
         from .selftest import selftest
         return selftest()
 
-    from .app import run
+    if args.check:
+        from .app import check
+        return check(cfg)
+
+    from .app import run, _error_box, _frozen
+    if _frozen():
+        # A windowed .exe has no console; surface a crash as a dialog.
+        try:
+            return run(cfg)
+        except Exception as e:  # noqa: BLE001
+            _error_box(f"Glide failed to start:\n\n{type(e).__name__}: {e}")
+            return 1
     return run(cfg)
 
 

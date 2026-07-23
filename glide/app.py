@@ -15,11 +15,43 @@ MODEL_URL = ("https://storage.googleapis.com/mediapipe-models/hand_landmarker/"
 WINDOW = "Glide"
 
 
+def _resource(name):
+    """Locate a data file bundled by PyInstaller (frozen build), else None."""
+    base = getattr(sys, "_MEIPASS", None)
+    if base:
+        p = os.path.join(base, name)
+        if os.path.isfile(p):
+            return p
+    return None
+
+
+def _frozen():
+    return getattr(sys, "frozen", False)
+
+
+def _error_box(msg):
+    """Show a modal error dialog. A windowed .exe has no console, so a fatal
+    startup problem would otherwise be an invisible no-op. No-op from source."""
+    if not _frozen():
+        return
+    try:
+        import ctypes
+        ctypes.windll.user32.MessageBoxW(None, str(msg), "Glide", 0x10)
+    except Exception:  # noqa: BLE001
+        pass
+
+
 def ensure_model(path):
-    """Return a usable model path, downloading it next to the package if
-    missing."""
-    if os.path.isfile(path):
+    """Return a usable model path.
+
+    Prefers an explicit existing path, then a copy bundled into the frozen
+    app, and finally downloads it next to the package (source runs only).
+    """
+    if path and os.path.isfile(path):
         return path
+    bundled = _resource("hand_landmarker.task")
+    if bundled:
+        return bundled
     print(f"Hand model not found; downloading to {path} ...")
     try:
         urllib.request.urlretrieve(MODEL_URL, path)
@@ -62,6 +94,7 @@ def run(cfg):
 
     model_path = ensure_model(cfg.model)
     if model_path is None:
+        _error_box("Glide could not load its hand-tracking model.")
         return 3
 
     options = vision.HandLandmarkerOptions(
@@ -76,8 +109,11 @@ def run(cfg):
 
     cap = _open_camera(cv2, cfg)
     if not cap.isOpened():
-        print(f"ERROR: could not open camera {cfg.camera}. "
-              f"Try a different camera index.", file=sys.stderr)
+        msg = (f"Glide could not open camera {cfg.camera}.\n\n"
+               f"Close other apps that may be using the webcam, or pick "
+               f"another camera with:  Glide --camera 1")
+        print(f"ERROR: {msg}", file=sys.stderr)
+        _error_box(msg)
         landmarker.close()
         return 2
     print(f"Camera: {int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))}x"
@@ -153,6 +189,29 @@ def run(cfg):
         cap.release()
         cv2.destroyAllWindows()
         landmarker.close()
+    return 0
+
+
+def check(cfg):
+    """Load the hand model with no camera or window and exit.
+
+    A quick way to smoke-test a packaged build — it exercises the whole
+    MediaPipe + model-bundling path without needing a webcam:
+
+        Glide.exe --check
+    """
+    from mediapipe.tasks import python as mp_python
+    from mediapipe.tasks.python import vision
+
+    model_path = ensure_model(cfg.model)
+    if model_path is None:
+        _error_box("Glide could not load its hand-tracking model.")
+        return 3
+    options = vision.HandLandmarkerOptions(
+        base_options=mp_python.BaseOptions(model_asset_path=model_path),
+        running_mode=vision.RunningMode.VIDEO, num_hands=1)
+    vision.HandLandmarker.create_from_options(options).close()
+    print(f"check: OK - hand model loaded from {model_path}")
     return 0
 
 
